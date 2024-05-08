@@ -24,6 +24,8 @@ public class Percorso {
             throw new NullPointerException("La variabile path è pari a null");
 
         this.path = path;
+
+        assert repOk();
     }
 
 //metodi
@@ -36,6 +38,8 @@ public class Percorso {
             throw new NullPointerException("Il punto è pari a null");
 
         path.add(p);
+
+        assert repOk();
     }
 
     public void remove(Punto p) throws NullPointerException {
@@ -44,6 +48,8 @@ public class Percorso {
     //         se p == null lancia una NullPointerException
 
         path.remove(p);
+
+        assert repOk();
     }
 
     public double length(){
