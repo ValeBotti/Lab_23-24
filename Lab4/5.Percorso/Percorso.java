@@ -3,10 +3,10 @@ import java.util.Scanner;
 
 public class Percorso {
 //OVERVIEW: modella una percorso costituito da una sequenza di dati di tipo Punto
-//          calsse mutabile (astrazione ed implementazione mutabile)
+//          calsse mutabile (astrazione ed implementazione mutabile--> quindi non metto private, se l'implementazione fosse imutabile metterei private)
 
 //attributi
-    private ArrayList<Punto> path = new ArrayList<Punto>();
+    ArrayList<Punto> path = new ArrayList<Punto>();
 
 //costruttori
     public Percorso(ArrayList<Punto> path) throws NullPointerException {
@@ -42,12 +42,16 @@ public class Percorso {
         assert repOk();
     }
 
-    public void remove(Punto p) throws NullPointerException {
-    //MODIFIES: this (p)
+    public void remove() {//ho fatto masking, il metodo è bonificato (non faccio reflection, quindi non lancio l'eccezzione al metodo che lo chiama)
+    //MODIFIES: this
     //EFFECTS: rimuove l'ultimo punto alla fine del percorso
-    //         se p == null lancia una NullPointerException
+    //         se path è vuoto gestisce la IndexOutOfBoundsException
 
-        path.remove(p);
+        try {
+            path.remove(path.size()-1);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Non puoi rimuovere un elemento da un cammino già vuoto");
+        }
 
         assert repOk();
     }
@@ -73,7 +77,7 @@ public class Percorso {
     }
 
     @Override
-    public String toString() {
+    public String toString() { //funzione di astrazione
         String path_stringa = "";
 
         for (Punto punto : path) {
@@ -109,7 +113,7 @@ public class Percorso {
         return true;
     }
 
-    public boolean repOk() {
+    public boolean repOk() { //invariante di rappresentazione
         if (path == null)
             return false;
         
@@ -140,20 +144,31 @@ public class Percorso {
             storage.add(p);
         }
 
-        Percorso path = new Percorso(storage);
+        try {
+            Percorso path = new Percorso(storage);
 
-        for (int i = 0; i < storage.size()-1; i++) {
-            ArrayList<Punto> due_punti = new ArrayList<>();
+            for (int i = 0; i < storage.size()-1; i++) {
+                ArrayList<Punto> due_punti = new ArrayList<>();
+    
+                due_punti.add(storage.get(i));
+                due_punti.add(storage.get(i+1));
 
-            due_punti.add(storage.get(i));
-            due_punti.add(storage.get(i+1));
+                try {
+                    Percorso step = new Percorso(due_punti);
+    
+                    System.out.println("Tratto " + (i+1) + ":" + " distanza " + step.length());
+                } catch (NullPointerException e) {
+                    System.out.println(e);
+                }
+            }
+    
+            path.remove();
+    
+            System.out.println("Totale: " + path.length());
 
-            Percorso step = new Percorso(due_punti);
-
-            System.out.println("Tratto " + (i+1) + ":" + " distanza " + step.length());
+        } catch (NullPointerException e) {
+            System.out.println(e);
         }
-
-        System.out.println("Totale: " + path.length());
 
         s.close();
     }
