@@ -1,65 +1,82 @@
 import java.util.Scanner;
 
 public class Razionale {
-//OVERVIEW: Classe che rappresenta un numero razionale. Deve avere delle variabili intere
-	private int numeratore;
-	private int denominatore;
+//OVERVIEW: modella un numero razionale
+//          rappresentazione immutabile ed astrazione mutabile
 
-//constructors
-	public Razionale(int numeratore, int denominatore) {
-	//MODIFIES: this
-	//EFFECTS: se denominatore != 0, inizializza il numero razionale con numeratore e denominatore;
-	//         throws ArithmeticException se denominatore == 0
-		setNumeratore(numeratore);
-		setDenominatore(denominatore);
-	}
+//attributi
+    private int num;
+    private int den;
 
-//methods
-	public void setNumeratore(int numeratore) {
-		this.numeratore = numeratore;
-	}
+//costruttore
+    public Razionale(int num, int den) throws ArithmeticException {
+    //MODIFIES: this
+    //EFFECTS: inizzializza this
+    //      se den == 0 lancia una ArithmeticException
+        if (den == 0)
+            throw new ArithmeticException("Denominatore del razionale e' zero");
 
-	public void setDenominatore(int denominatore) {
-	// MODIFIES: this
-	// EFFECTS: imposta this col denominatore specificato;
-	//          se == 0 lancia ArithmeticException
-		if(denominatore == 0)
-			throw new ArithmeticException("Denominatore del razionale e' zero");
+        this.num = num;
+        this.den = den;
+    }
 
-		this.denominatore = denominatore;
+//metodi
+    
+    public double valore() throws ArithmeticException {
+    //EFFECTS: restituisce il rapporto tra numeratore e denominatore
 
-		assert repOk();
-	}
+        try {
+            return num/den;
+        } catch (ArithmeticException e) {
+            throw new ArithmeticException("Denominatore del razionale e' zero");
+        }
+    }
 
-	public double valore() {
-	//EFFECTS: restituisce il decimale corrispondente
-		return (double) this.numeratore / this.denominatore;
-	}
+    public void setNum(int num) {
+        this.num = num;
+        assert repOk();
+    }
 
-	public int getNumeratore() {
-		return this.numeratore;
-	}
+    public void setDen(int den) {
+        this.den = den;
+        assert repOk();
+    }
 
-	public int getDenominatore() {
-		return this.denominatore;
-	}
-	
-	private boolean repOk() {
-		if(this.denominatore == 0)
-			return false;
-		
-		return true;
-	}
+    public int getNum() {
+        return num;
+    }
 
-	@Override
-	public String toString() {
-		return "Razionale: " + numeratore + "/" + denominatore;
-	}
+    public int getDen() {
+        return den;
+    }
 
-	public static void main(String[] args) {
-		int num = Integer.parseInt(args[0]);
-		int den = Integer.parseInt(args[1]);
-		Razionale r = new Razionale(num, den);
-		System.out.println(r + " o " + r.valore());
-	}
+    @Override
+    public String toString() { //funzione di astrazione
+        String res = "Numeratore: " + num + " Denominatore: " + den;
+        return res;
+    }
+
+    public boolean repOk() {//invariante di rappresentazione
+        if (den == 0)
+            return false;
+        return true;
+    }
+
+    public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
+
+        int num = 0;
+        int den = 0;
+
+        while (s.hasNext()) {
+            num = s.nextInt();
+            den = s.nextInt();
+        }
+
+        Razionale r = new Razionale(num, den);
+
+        System.out.println(r.valore());
+
+        s.close();
+    }
 }
